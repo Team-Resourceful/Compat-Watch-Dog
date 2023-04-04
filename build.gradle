@@ -1,0 +1,83 @@
+plugins {
+    id "architectury-plugin" version "3.4-SNAPSHOT"
+    id "dev.architectury.loom" version "0.11.0-SNAPSHOT" apply false
+}
+
+architectury {
+    minecraft = rootProject.minecraft_version
+}
+
+allprojects {
+    apply plugin: "java"
+    apply plugin: "architectury-plugin"
+
+    archivesBaseName = rootProject.archives_base_name
+    version = rootProject.mod_version
+    group = rootProject.maven_group
+
+    tasks.withType(JavaCompile) {
+        options.encoding = "UTF-8"
+        options.release = 17
+    }
+
+    java {
+        withSourcesJar()
+    }
+}
+
+subprojects {
+    apply plugin: "dev.architectury.loom"
+    apply plugin: "maven-publish"
+
+    loom {
+        silentMojangMappingsLicense()
+    }
+
+    dependencies {
+        minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+        mappings loom.officialMojangMappings()
+    }
+
+    var env = System.getenv()
+    var modLoader = name
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                artifact remapJar
+                artifact(sourcesJar) {
+                    builtBy remapSourcesJar
+                }
+
+                artifactId = "$archivesBaseName-$modLoader-$rootProject.minecraft_version"
+
+                pom {
+                    name = "Compat-Watch-Dog"
+                    description = ''
+                    url = "https://github.com/Team-Resourceful/Compat-Watch-Dog"
+
+                    scm {
+                        connection = "git:https://github.com/Team-Resourceful/Compat-Watch-Dog.git"
+                        developerConnection = "git:https://github.com/Team-Resourceful/Compat-Watch-Dog.git"
+                        url = "https://github.com/Team-Resourceful/Compat-Watch-Dog"
+                    }
+
+                    licenses {
+                        license {
+                            name = "MIT"
+                        }
+                    }
+                }
+            }
+        }
+        repositories {
+            maven {
+                url = "https://maven.resourcefulbees.com/repository/maven-releases/"
+                credentials {
+                    username env.MAVEN_USER
+                    password env.MAVEN_PASS
+                }
+            }
+        }
+    }
+}
