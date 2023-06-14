@@ -1,11 +1,10 @@
 package com.teamresourceful.compatwatchdog.client;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.teamresourceful.compatwatchdog.CompatWatchDog;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
@@ -40,12 +39,14 @@ public class IncompatabilityScreen extends Screen {
 		this.addRenderableWidget(Button.builder(OPEN_FOLDER, (button) -> CompatWatchDog.openModsFolder()).bounds(i, k, 150, 20).build());
 	}
 
+
+
 	@Override
-	public void render(@NotNull PoseStack stack, int i, int j, float f) {
-		this.renderBackground(stack);
-		this.theList.render(stack, i, j, f);
-		drawCenteredString(stack, this.font, this.title, this.width / 2, 16, 16777215);
-		super.render(stack, i, j, f);
+	public void render(@NotNull GuiGraphics graphics, int i, int j, float f) {
+		this.renderBackground(graphics);
+		this.theList.render(graphics, i, j, f);
+		graphics.drawCenteredString(this.font, this.title, this.width / 2, 16, 16777215);
+		super.render(graphics, i, j, f);
 	}
 
 	@Environment(EnvType.CLIENT)
@@ -77,10 +78,10 @@ public class IncompatabilityScreen extends Screen {
 			}
 
 			@Override
-			public void render(@NotNull PoseStack stack, int i, int j, int k, int l, int m, int n, int o, boolean bl, float f) {
+			public void render(@NotNull GuiGraphics graphics, int i, int j, int k, int l, int m, int n, int o, boolean bl, float f) {
 				int p = k + 1 + (this.line.index() > 0L ? 16 : 0);
 				int q = j + (m - 9) / 2 + 1;
-				GuiComponent.drawString(stack, IncompatabilityScreen.this.font, this.line.contents(), p, q, -1);
+				graphics.drawString(IncompatabilityScreen.this.font, this.line.contents(), p, q, -1);
 			}
 
 			@Override

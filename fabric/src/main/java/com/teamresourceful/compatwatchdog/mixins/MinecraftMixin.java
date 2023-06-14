@@ -1,6 +1,7 @@
 package com.teamresourceful.compatwatchdog.mixins;
 
 import com.teamresourceful.compatwatchdog.CompatWatchDog;
+import com.teamresourceful.compatwatchdog.fabric.ModJsonCompatHandler;
 import net.minecraft.client.Minecraft;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -15,6 +16,7 @@ public class MinecraftMixin {
             at = @At("TAIL")
     )
     private void onChangeScreen(CallbackInfo ci) {
+        ModJsonCompatHandler.load();
         CompatWatchDog.init();
     }
 }
